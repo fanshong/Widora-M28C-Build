@@ -32,3 +32,31 @@ sed -i '/\/etc\/init\.d\/mosdns/d' feeds/luci/applications/luci-app-mosdns/Makef
 sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/Makefile
 sed -i 's/luci-theme-argon/luci-theme-design/g' feeds/luci/collections/luci/Makefile
 #git clone https://github.com/garypang13/luci-app-fan.git package/luci-app-fan
+
+# --- 修改默认设置 ---
+
+# 1. 修改默认 LAN IP (例如改为 192.168.6.1)
+# 解释：默认是 192.168.1.1，容易和光猫冲突，建议修改
+sed -i 's/192.168.1.1/192.168.6.1/g' package/base-files/files/bin/config_generate
+
+# 2. 修改默认 Wi-Fi 名称 (SSID)
+# 解释：ImmortalWrt 默认 SSID 通常叫 "ImmortalWrt"，我们把它替换成你的名字
+# 注意：把 "My_Wifi_Name" 换成你想要的英文名称，不要用中文
+sed -i 's/ImmortalWrt/My_Wifi_Name/g' package/base-files/files/bin/config_generate
+
+# 3. (高级) 默认开启 Wi-Fi 并设置密码
+# OpenWrt 默认 Wi-Fi 是无密码且可能未启用的。
+# 我们可以创建一个“首次启动脚本”来自动设置它。
+# 这里的 'password123' 是你的 Wi-Fi 密码，'encryption' 是加密方式
+mkdir -p files/etc/uci-defaults
+cat << EOF > files/etc/uci-defaults/99-custom-wifi
+uci set wireless.@wifi-device[0].disabled='0'
+uci set wireless.@wifi-device[1].disabled='0'
+uci set wireless.@wifi-iface[0].ssid='My_Wifi_Name_5G'
+uci set wireless.@wifi-iface[0].key='password123'
+uci set wireless.@wifi-iface[0].encryption='psk2'
+uci set wireless.@wifi-iface[1].ssid='My_Wifi_Name_2.4G'
+uci set wireless.@wifi-iface[1].key='password123'
+uci set wireless.@wifi-iface[1].encryption='psk2'
+uci commit wireless
+EOF
