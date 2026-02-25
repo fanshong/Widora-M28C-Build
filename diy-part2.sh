@@ -40,7 +40,7 @@ sed -i 's/luci-theme-bootstrap/luci-theme-design/g' feeds/luci/collections/luci/
 sed -i 's/luci-theme-argon/luci-theme-design/g' feeds/luci/collections/luci/Makefile
 
 # --- 强制拉取风扇控制界面 ---
-#git clone https://github.com/garypang13/luci-app-fan.git package/luci-app-fan
+git clone https://github.com/garypang13/luci-app-fan.git package/luci-app-fan
 
 # --- 修改默认 LAN IP 地址 ---
 # 将默认的 192.168.1.1 修改为 192.168.6.1 (防止光猫冲突)
